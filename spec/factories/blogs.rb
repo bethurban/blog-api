@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :blog do
-    title { Faker::StarWars.call_squadron }
-    created_by { Faker::StarWars.character }
+    title { Faker::Movies::StarWars.call_squadron }
+    created_by { Faker::Movies::StarWars.character }
   end
 end
