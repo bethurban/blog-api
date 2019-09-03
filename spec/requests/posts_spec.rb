@@ -58,15 +58,15 @@ RSpec.describe 'Posts API' do
     end
   end
 
-  #Test suite for PUT /blogs/:blog_id/posts
+  #Test suite for POST /blogs/:blog_id/posts
   describe 'POST /blogs/:blog_id/posts' do
     let(:valid_attributes) { { title: 'A very interesting blog post', content: 'Super interesting!' } }
 
     context 'when request attributes are valid' do
       before { post "/blogs/#{blog_id}/posts", params: valid_attributes }
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(200)
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
       end
     end
 
