@@ -7,7 +7,7 @@ class BlogsController < ApplicationController
   end
 
   def create
-    @blog = Blog.create(blog_params)
+    @blog = Blog.create!(blog_params)
     json_response(@blog, :created)
   end
 
