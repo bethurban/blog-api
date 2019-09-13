@@ -2,12 +2,13 @@ class BlogsController < ApplicationController
   before_action :set_blog, only: [:show, :update, :destroy]
 
   def index
+    ## Need to update this to get blog id from params
     @blogs = Blog.all
     json_response(@blogs)
   end
 
   def create
-    @blog = Blog.create!(blog_params)
+    @blog = current_user.blogs.create!(blog_params)
     json_response(@blog, :created)
   end
 
@@ -28,7 +29,7 @@ class BlogsController < ApplicationController
   private
 
   def blog_params
-    params.permit(:title, :created_by)
+    params.permit(:title)
   end
 
   def set_blog
