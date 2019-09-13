@@ -2,8 +2,12 @@ require 'rails_helper'
 
 RSpec.describe 'Blogs API', type: :request do
   #Initialize test data
-  let!(:blogs) { create_list(:blog, 10) }
+  let(:user) { create(:user) }
+  let!(:blogs) { create_list(:blog, 10, created_by: user.id) }
   let(:blog_id) { blogs.first.id }
+
+  #Authorize request
+  let(:headers) { valid_headers }
 
   #Test suite for GET /blogs
   describe 'GET /blogs' do
@@ -51,10 +55,12 @@ RSpec.describe 'Blogs API', type: :request do
     #Test suite for POST /blogs
     describe 'POST /blogs' do
       #Valid payload
-      let(:valid_attributes) { { title: 'My Blog', created_by: 'Beth' }}
+      let(:valid_attributes) do
+        { title: 'My Blog', created_by: user.id.to_s }.to_json
+      end
 
       context 'when the request is valid' do
-        before { post '/blogs', params: valid_attributes }
+        before { post '/blogs', params: valid_attributes, headers: headers }
 
         it 'creates a blog' do
           expect(json['title']).to eq('My Blog')
@@ -66,25 +72,26 @@ RSpec.describe 'Blogs API', type: :request do
       end
 
       context 'when the request is invalid' do
-        before { post '/blogs', params: { title: 'Bad blog' }}
+        let(:invalid_attributes) { { title: nil }.to_json }
+        before { post '/blogs', params: invalid_attributes, headers: headers }
 
         it 'returns status code 422' do
           expect(response).to have_http_status(422)
         end
 
         it 'returns a validation failure message' do
-          expect(response.body)
-            .to match(/Validation failed. Created by can't be blank./)
+          expect(json['message'])
+            .to match(/Validation failed. Title can't be blank./)
         end
       end
     end
 
     #Test suite for PUT /blogs/:id
     describe 'PUT /blogs/:id' do
-      let(:valid_attributes) {{ title: 'My New Blog' }}
+      let(:valid_attributes) {{ title: 'My New Blog' }.to_json }
 
       context 'when the record exists' do
-        before { put "/blogs/#{blog_id}", params: valid_attributes }
+        before { put "/blogs/#{blog_id}", params: valid_attributes, headers: headers }
 
         it 'updates the record' do
           expect(response.body).to be_empty
@@ -98,12 +105,12 @@ RSpec.describe 'Blogs API', type: :request do
 
     #Test suite for DELETE /blogs/:id
     describe 'DELETE /blogs/:id' do
-      before { delete "/blogs/#{blog_id}" }
+      before { delete "/blogs/#{blog_id}", params: {}, headers: headers }
 
       it 'returns status code 204' do
         expect(response).to have_http_status(204)
       end
     end
   end
-  
+
 end
