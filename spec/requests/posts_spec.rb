@@ -3,10 +3,12 @@ require 'rails_helper'
 RSpec.describe 'Posts API' do
 
   #Initialize the test data
-  let!(:blog) { create(:blog) }
+  let(:user) { create(:user) }
+  let!(:blog) { create(:blog, created_by: user.id) }
   let!(:posts) { create_list(:post, 20, blog_id: blog.id) }
   let(:blog_id) { blog.id }
   let(:id) { posts.first.id }
+  let(:headers) { valid_headers }
 
   #Test suite for GET /blogs/:blog_id/posts
   describe 'GET /blogs/:blog_id/posts' do
@@ -60,10 +62,12 @@ RSpec.describe 'Posts API' do
 
   #Test suite for POST /blogs/:blog_id/posts
   describe 'POST /blogs/:blog_id/posts' do
-    let(:valid_attributes) { { title: 'A very interesting blog post', content: 'Super interesting!' } }
+    let(:valid_attributes) { { title: 'A very interesting blog post', content: 'Super interesting!' }.to_json }
 
     context 'when request attributes are valid' do
-      before { post "/blogs/#{blog_id}/posts", params: valid_attributes }
+      before do
+        post "/blogs/#{blog_id}/posts", params: valid_attributes, headers: headers
+      end
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -71,7 +75,7 @@ RSpec.describe 'Posts API' do
     end
 
     context 'when an invalid request' do
-      before { post "/blogs/#{blog_id}/posts", params: {} }
+      before { post "/blogs/#{blog_id}/posts", params: {}, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -85,9 +89,11 @@ RSpec.describe 'Posts API' do
 
   #Test suite for PUT /blogs/:blog_id/posts/:id
   describe 'PUT /blogs/:blog_id/posts/:id' do
-    let(:valid_attributes) { { title: 'A better blog post' } }
+    let(:valid_attributes) { { title: 'A better blog post' }.to_json }
 
-    before { put "/blogs/#{blog_id}/posts/#{id}", params: valid_attributes }
+    before do
+      put "/blogs/#{blog_id}/posts/#{id}", params: valid_attributes, headers: headers
+    end
 
     context 'when post exists' do
       it 'returns status code 204' do
@@ -115,7 +121,7 @@ RSpec.describe 'Posts API' do
 
   #Test suite for DELETE /blogs/:id
   describe 'DELETE /blogs/:id' do
-    before { delete "/blogs/#{blog_id}/posts/#{id}" }
+    before { delete "/blogs/#{blog_id}/posts/#{id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
