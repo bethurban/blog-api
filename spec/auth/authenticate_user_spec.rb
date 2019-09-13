@@ -10,7 +10,7 @@ RSpec.describe AuthenticateUser do
   subject(:valid_auth_obj) { described_class.new(user.name, user.email, user.password) }
 
   #Invalid request subject
-  subject(:invalid_auth_obj) { described_class.new('foo', 'bar') }
+  subject(:invalid_auth_obj) { described_class.new('foo', 'foo', 'bar') }
 
   #Test suite for AuthenticateUser#call
   describe '#call' do
