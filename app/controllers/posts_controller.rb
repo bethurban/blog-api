@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_blog
   before_action :set_blog_post, only: [:show, :update, :destroy]
+  # skip_before_action :authorize_request, only: :index, :show
 
   def index
     json_response(@blog.posts)

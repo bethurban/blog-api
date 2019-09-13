@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'pry'
 
 RSpec.describe AuthenticateUser do
 
@@ -6,7 +7,7 @@ RSpec.describe AuthenticateUser do
   let(:user) { create(:user) }
 
   #Valid request subject
-  subject(:valid_auth_obj) { described_class.new(user.email, user.password) }
+  subject(:valid_auth_obj) { described_class.new(user.name, user.email, user.password) }
 
   #Invalid request subject
   subject(:invalid_auth_obj) { described_class.new('foo', 'bar') }
