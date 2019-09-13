@@ -82,7 +82,7 @@ RSpec.describe 'Posts API' do
       end
 
       it 'returns a failure message' do
-        expect(response.body).to match(/Validation failed: Title can't be blank/)
+        expect(response.body).to match(/Validation failed. Title can't be blank./)
       end
     end
   end

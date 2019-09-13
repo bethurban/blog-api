@@ -1,6 +1,6 @@
 class BlogsController < ApplicationController
   before_action :set_blog, only: [:show, :update, :destroy]
-  # skip_before_action :authorize_request, only: :index, :show
+  skip_before_action :authorize_request, only: [:index, :show]
 
   def index
     ## Need to update this to get blog id from params

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'pry'
 
 RSpec.describe 'Blogs API', type: :request do
   #Initialize test data
@@ -16,6 +17,7 @@ RSpec.describe 'Blogs API', type: :request do
 
     it 'returns blogs' do
       #'json' is a custom helper to parse JSON responses
+      # binding.pry
       expect(json).not_to be_empty
       expect(json.size).to eq(10)
     end
@@ -81,7 +83,7 @@ RSpec.describe 'Blogs API', type: :request do
 
         it 'returns a validation failure message' do
           expect(json['message'])
-            .to match(/Validation failed. Title can't be blank./)
+            .to match(/Validation failed: Title can't be blank/)
         end
       end
     end
